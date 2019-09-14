@@ -1,0 +1,19 @@
+strongly_connected scc;
+int n; // = number of clauses
+void init(int _n){ scc.clear(); n = _n; }
+int NOT(int x){ return x >= n ? (x - n) : (x + n); }
+void add_edge(int x, int y){ // input ~x to denote NOT
+	if((x >> 31) & 1) x = (~x) + n;
+	if((y >> 31) & 1) y = (~y) + n;
+	scc.add_edge(x, y), scc.add_edge(NOT(y), NOT(x));
+}
+bool satisfy(vector<bool> &res){
+	res.resize(n);
+	scc.get_scc(2*n);
+	for(int i=0; i<n; i++){
+		if(scc.comp[i] == scc.comp[NOT(i)]) return 0;
+		if(scc.comp[i] < scc.comp[NOT(i)]) res[i] = 0;
+		else res[i] = 1;
+	}
+	return 1;
+}

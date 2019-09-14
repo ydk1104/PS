@@ -1,0 +1,18 @@
+<snippet>
+	<content><![CDATA[
+ll egcd(ll a, ll b, ll& s, ll& t) {
+	if(!b) {
+		s = 1, t = 0;
+		return a;
+	}
+	ll q=a/b, r=a%b, ss, tt;
+	ll g=egcd(b,r,ss,tt);
+	s = tt, t = ss - q * tt;
+	return g;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-egcd</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

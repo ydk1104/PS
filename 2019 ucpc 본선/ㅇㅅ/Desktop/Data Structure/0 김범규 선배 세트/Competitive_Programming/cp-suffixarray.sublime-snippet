@@ -1,0 +1,41 @@
+<snippet>
+	<content><![CDATA[
+const int MAX = ${1:1<<20;}
+int _n, _d, _grp[MAX];
+bool cmp(int i, int j) {
+	if(_grp[i]!=_grp[j]) return _grp[i]<_grp[j];
+	i += _d, j += _d;
+	return i<_n && j<_n ? _grp[i]<_grp[j] : i>j;
+}
+vector<int> suffixArray(char* s) {
+	_n = (int)strlen(s);
+	vector<int> sa(_n), tmp(_n);
+	for(int i=0; i<_n; i++) {
+		sa[i] = i;
+		_grp[i] = s[i];
+	}
+	for(_d=1; ; _d<<=1) {
+		sort(sa.begin(), sa.end(), cmp);
+		for(int i=1; i<_n; i++)
+			tmp[i] = tmp[i-1] + cmp(sa[i-1], sa[i]);
+		for(int i=0; i<_n; i++)
+			_grp[sa[i]] = tmp[i];
+		if(tmp[_n-1] == _n-1) break;
+	}
+	return sa;
+}
+vector<int> lcpArray(char* s, vector<int>& sa) {
+	vector<int> lcp(_n-1);
+	for(int i=0, k=0; i<_n; i++, k=max(k-1,0)) {
+		if(_grp[i] == _n-1) continue;
+		for(int j=sa[_grp[i]+1]; s[i+k] == s[j+k]; k++);
+		lcp[_grp[i]] = k;
+	}
+	return lcp;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-suffixarray</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

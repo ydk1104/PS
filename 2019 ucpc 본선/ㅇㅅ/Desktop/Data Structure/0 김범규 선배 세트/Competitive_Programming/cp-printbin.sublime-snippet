@@ -1,0 +1,11 @@
+<snippet>
+	<content><![CDATA[
+void printbin(int n, int b = 31) {
+	for(int i=b-1; i>=0; i--) printf("%d", n>>i&1);
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-printbin</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

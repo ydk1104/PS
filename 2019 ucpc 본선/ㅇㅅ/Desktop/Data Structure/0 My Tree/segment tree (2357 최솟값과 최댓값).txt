@@ -1,0 +1,28 @@
+struct segtree{
+    vector<ll> A, minTree,maxTree;
+    ll init_size(int n){ /// this is 0 - based
+        A.resize(n);
+        int h = (int)ceil(log2(n));
+        int tree_size = (1<<(h+1));
+        minTree.resize(tree_size);
+        maxTree.resize(tree_size);
+    }
+    ll minInit(int node,int start,int finish){
+        if(start==finish) return minTree[node] = A[start];
+        else return minTree[node] = min(minInit(node*2,start,(start+finish)/2),minInit(node*2+1,(start+finish)/2+1,finish));
+    }
+    ll mini(int node,int start,int finish,int left,int right){
+        if(left>finish||right<start) return inf;
+        if(left<=start&&finish<=right) return minTree[node];
+        return min(mini(node*2,start,(start+finish)/2,left,right),mini(node*2+1,(start+finish)/2+1,finish,left,right));
+    }
+    ll maxInit(int node,int start,int finish){
+        if(start==finish) return maxTree[node] = A[start];
+        else return maxTree[node] = max(maxInit(node*2,start,(start+finish)/2),maxInit(node*2+1,(start+finish)/2+1,finish));
+    }
+    ll maxi(int node,int start,int finish,int left,int right){
+        if(left>finish||right<start) return -1;
+        if(left<=start&&finish<=right) return maxTree[node];
+        return max(maxi(node*2,start,(start+finish)/2,left,right),maxi(node*2+1,(start+finish)/2+1,finish,left,right));
+    }
+};

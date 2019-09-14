@@ -1,0 +1,39 @@
+<snippet>
+	<content><![CDATA[
+template<typename T>
+struct seg {
+	int n;
+	vector<T> V;
+	seg(int n) : n(n) { V = vector<T>(4*n); }
+	void update(int h, int tl, int tr, int p, T x) {
+		if(tr < p || tl > p) return;
+		if(tl == tr) { 
+			${4:V[h] = x; // STUFF}
+			return;
+		}
+		int mid = (tl + tr) >> 1;
+		update(h*2, tl, mid, p, x);
+		update(h*2+1, mid+1, tr, p, x);
+		${1:V[h] = V[h*2] + V[h*2+1]; // STUFF}
+	}
+	void update(int p, T x) {
+		update(1, 1, n, p, x);
+	}
+	T query(int h, int tl, int tr, int l, int r) {
+		if(tr < l || tl > r) return ${2:0; // STUFF}
+		if(l <= tl && tr <= r) return V[h];
+		int mid = (tl + tr) / 2;
+		T ql = query(h*2, tl, mid, l, r);
+		T qr = query(h*2+1, mid+1, tr, l, r);
+		return ${3:ql + qr; // STUFF}
+	}
+	T query(int l, int r) {
+		return query(1, 1, n, l, r);
+	}
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-seg</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

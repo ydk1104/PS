@@ -1,0 +1,127 @@
+using lll = long long;
+
+lll ipow(lll x, lll p){
+	lll ret = 1, piv = x;
+	while(p){
+		if(p & 1) ret = ret * piv % mod;
+		piv = piv * piv % mod;
+		p >>= 1;
+	}
+	return ret;
+}
+vector<ll> berlekamp_massey(vector<ll> x){
+	vector<ll> ls, cur;
+	ll lf, ld;
+	for(ll i=0; i<x.size(); i++){
+		lll t = 0;
+		for(ll j=0; j<cur.size(); j++){
+			t = (t + 1ll * x[i-j-1] * cur[j]) % mod;
+		}
+		if((t - x[i]) % mod == 0) continue;
+		if(cur.empty()){
+			cur.resize(i+1);
+			lf = i;
+			ld = (t - x[i]) % mod;
+			continue;
+		}
+		lll k = -(x[i] - t) * ipow(ld, mod - 2) % mod;
+		vector<ll> c(i-lf-1);
+		c.push_back(k);
+		for(auto &j : ls) c.push_back(-j * k % mod);
+		if(c.size() < cur.size()) c.resize(cur.size());
+		for(ll j=0; j<cur.size(); j++){
+			c[j] = (c[j] + cur[j]) % mod;
+		}
+		if(i-lf+(ll)ls.size()>=(ll)cur.size()){
+			tie(ls, lf, ld) = make_tuple(cur, i, (t - x[i]) % mod);
+		}
+		cur = c;
+	}
+	for(auto &i : cur) i = (i % mod + mod) % mod;
+	return cur;
+}
+ll get_nth(vector<ll> rec, vector<ll> dp, lll n){
+	ll m = rec.size();
+	vector<ll> s(m), t(m);
+	s[0] = 1;
+	if(m != 1) t[1] = 1;
+	else t[0] = rec[0];
+	auto mul = [&rec](vector<ll> v, vector<ll> w){
+		ll m = v.size();
+		vector<ll> t(2 * m);
+		for(ll j=0; j<m; j++){
+			for(ll k=0; k<m; k++){
+				t[j+k] += 1ll * v[j] * w[k] % mod;
+				if(t[j+k] >= mod) t[j+k] -= mod;
+			}
+		}
+		for(ll j=2*m-1; j>=m; j--){
+			for(ll k=1; k<=m; k++){
+				t[j-k] += 1ll * t[j] * rec[k-1] % mod;
+				if(t[j-k] >= mod) t[j-k] -= mod;
+			}
+		}
+		t.resize(m);
+		return t;
+	};
+	while(n){
+		if(n & 1) s = mul(s, t);
+		t = mul(t, t);
+		n >>= 1;
+	}
+	lll ret = 0;
+	for(ll i=0; i<m; i++) ret += 1ll * s[i] * dp[i] % mod;
+	return ret % mod;
+}
+ll guess_nth_term(vector<ll> x, lll n){
+	if(n < x.size()) return x[n];
+	vector<ll> v = berlekamp_massey(x);
+	if(v.empty()) return 0;
+	return get_nth(v, x, n);
+}
+struct elem{ll x, y, v;}; // A_(x, y) <- v, 0-based. no duplicate please..
+vector<ll> get_min_poly(ll n, vector<elem> M){
+	// smallest poly P such that A^i = sum_{j < i} {A^j \times P_j}
+	vector<ll> rnd1, rnd2;
+	mt19937 rng(0x14004);
+	auto randll = [&rng](ll lb, ll ub){
+		return uniform_int_distribution<ll>(lb, ub)(rng);
+	};
+	for(ll i=0; i<n; i++){
+		rnd1.push_back(randll(1, mod - 1));
+		rnd2.push_back(randll(1, mod - 1));
+	}
+	vector<ll> gobs;
+	for(ll i=0; i<2*n+2; i++){
+		ll tmp = 0;
+		for(ll j=0; j<n; j++){
+			tmp += 1ll * rnd2[j] * rnd1[j] % mod;
+			if(tmp >= mod) tmp -= mod;
+		}
+		gobs.push_back(tmp);
+		vector<ll> nxt(n);
+		for(auto &i : M){
+			nxt[i.x] += 1ll * i.v * rnd1[i.y] % mod;
+			if(nxt[i.x] >= mod) nxt[i.x] -= mod;
+		}
+		rnd1 = nxt;
+	}
+	auto sol = berlekamp_massey(gobs);
+	reverse(sol.begin(), sol.end());
+	return sol;
+}
+lll det(ll n, vector<elem> M){
+	vector<ll> rnd;
+	mt19937 rng(0x14004);
+	auto randll = [&rng](ll lb, ll ub){
+		return uniform_int_distribution<ll>(lb, ub)(rng);
+	};
+	for(ll i=0; i<n; i++) rnd.push_back(randll(1, mod - 1));
+	for(auto &i : M){
+		i.v = 1ll * i.v * rnd[i.y] % mod;
+	}
+	auto sol = get_min_poly(n, M)[0];
+	if(n % 2 == 0) sol = mod - sol;
+	for(auto &i : rnd) sol = 1ll * sol * ipow(i, mod - 2) % mod;
+	return sol;
+}

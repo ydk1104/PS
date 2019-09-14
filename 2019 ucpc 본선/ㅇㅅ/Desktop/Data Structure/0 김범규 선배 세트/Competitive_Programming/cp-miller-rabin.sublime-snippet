@@ -1,0 +1,39 @@
+<snippet>
+	<content><![CDATA[
+bool miillerTest(ll d, ll n) {
+	// Pick a random number in [2..n-2]
+	// Corner cases make sure that n > 4
+	ll a = 2 + rand() % (n - 4);
+	ll x = modpow(a, d, n);
+
+	if(x == 1  || x == n-1)
+		return true;
+
+	while(d != n-1) {
+		x = x * x % n; // n must <= 3e9
+		//x = modmul(x, x, n);
+		d *= 2;
+		if(x == 1) return 0;
+		if(x == n-1) return 1;
+	}
+	return 0;
+}
+bool isPrime(ll n, ll k) {
+	if(n <= 1 || (n >= 4 && n % 2 == 0)) return 0;
+	if(n <= 3) return 1;
+	// Find r such that n = 2^d * r + 1 for some r >= 1
+	ll d = n - 1;
+	while(d % 2 == 0)
+		d /= 2;
+	// Iterate given nber of 'k' times
+	for(int i = 0; i < k; i++)
+		if(!miillerTest(d, n))
+			return 0;
+	return 1;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-miller-rabin</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

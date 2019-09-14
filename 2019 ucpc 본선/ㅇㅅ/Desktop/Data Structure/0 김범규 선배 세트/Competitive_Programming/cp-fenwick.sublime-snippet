@@ -1,0 +1,15 @@
+<snippet>
+	<content><![CDATA[const int BIT_SIZE = ${1:1<<20};
+
+template <typename T>
+struct fenwick_tree{
+	T d[BIT_SIZE];
+	void update(int x, T v) { for(; x < BIT_SIZE; x += x&-x) d[x] += v; }
+	int query(int x) { int r = 0; for (; x; x -= x&-x) r += d[x]; return r; }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-fenwick</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

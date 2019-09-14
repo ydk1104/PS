@@ -1,0 +1,46 @@
+<snippet>
+	<content><![CDATA[
+namespace FFT {
+	using base = complex<ld>;
+	const ld PI = acosl(-1);
+	int Log(int n) {
+		int r = 0;
+		while(n > 1) n >>= 1, r++;
+		return r;
+	}
+	int Rev(int n, int lg) {
+		int r = 0;
+		for(int i=0; i<lg; i++, n>>=1)
+			r = (r << 1) + (n & 1);
+		return r;
+	}
+	void solve(vector<base>& a, bool f) {
+		int n = SZ(a), lg = Log(n);
+		for(int i=0; i<n; i++) {
+			int j = Rev(i, lg);
+			if(i < j) swap(a[i], a[j]);
+		}
+		vector<base> root(n/2);
+		ld ang = 2 * PI / n * (f ? 1 : -1);
+		for(int i=0; i<n/2; i++)
+			root[i] = base(cosl(ang * i), sinl(ang * i));
+		for(int i=1; i<n; i<<=1) {
+			int s = n / i / 2;
+			for(int j=0; j<n; j+=i<<1) {
+				for(int k=0; k<i; k++) {
+					base u = a[j+k];
+					base v = a[i+j+k] * root[s * k];
+					a[j+k] = u + v;
+					a[i+j+k] = u - v;;
+				}
+			}
+		}
+		if(f) for(int i=0; i<n; i++) a[i] /= n;
+	}
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-fft</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

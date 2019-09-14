@@ -1,0 +1,75 @@
+<snippet>
+	<content><![CDATA[
+struct Dinic {
+	using VI = vector<int>;
+	using VVI = vector<VI>;
+	using VL = vector<ll>;
+	using VVL = vector<VL>;
+	int n;
+	VI level, iter;
+	VVI to, rev;
+	VVL re;
+	Dinic(int n) : n(n) {
+		level = VI(n+1);
+		iter = VI(n+1);
+		to = VVI(n+1);
+		re = VVL(n+1);
+		rev = VVI(n+1);
+	}
+	void addEdge(int a, int b, ll r) {
+		to[a].push_back(b);
+		to[b].push_back(a);
+		re[a].push_back(r);
+		re[b].push_back(0);
+		rev[a].push_back(SZ(to[b])-1);
+		rev[b].push_back(SZ(to[a])-1);
+	}
+	void bfs(int src) {
+		fill(level.begin(), level.end(), -1);
+		queue<int> q;
+		q.push(src), level[src] = 0;
+		while(!q.empty()) {
+			int u = q.front(); q.pop();
+			for(int i=0; i<SZ(to[u]); i++) {
+				int v = to[u][i];
+				if(re[u][i] > 0 && level[v] == -1) {
+					level[v] = level[u] + 1;
+					q.push(v);
+				}
+			}
+		}
+	}
+	ll dfs(int u, int dst, ll flow) {
+		if(u == dst) return flow;
+		for(int& i=iter[u]; i<SZ(to[u]); i++) {
+			int v = to[u][i];
+			if(re[u][i] > 0 && level[u] + 1 == level[v]) {
+				ll d = dfs(v, dst, min(flow, re[u][i]));
+				if(d) {
+					re[u][i] -= d;
+					re[v][rev[u][i]] += d;
+					return d;
+				}
+			}
+		}
+		return 0;
+	}
+	ll solve(int src, int dst) {
+		ll ret = 0;
+		while(1) {
+			bfs(src);
+			if(level[dst] == -1) break;
+			fill(iter.begin(), iter.end(), 0);
+			ll f;
+			while((f = dfs(src, dst, 1e15)) > 0)
+				ret += f;
+		}
+		return ret;
+	}
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-dinic</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

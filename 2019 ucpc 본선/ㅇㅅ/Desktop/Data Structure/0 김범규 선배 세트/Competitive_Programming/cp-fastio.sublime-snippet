@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+int _curr, _size;
+char _buff[${1:1<<25}];
+char rc() {
+	if(_curr == _size) {
+		_size = (int)fread(_buff, 1, sizeof(_buff), stdin);
+		_curr = 0;
+	}
+	if(!_size) return 0;
+	return _buff[_curr++];
+}
+int ri() {
+	int c, x = 0, f = 1;
+	while((c = rc()) <= 32);
+	if(c == '-') f = -1, c = rc();
+	while(c > 32) x = (x << 3) + (x << 1) + c - 48, c = rc();
+	return x * f;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-fastio</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

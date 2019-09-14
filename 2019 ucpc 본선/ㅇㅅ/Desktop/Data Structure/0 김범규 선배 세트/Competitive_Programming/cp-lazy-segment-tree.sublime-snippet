@@ -1,0 +1,55 @@
+<snippet>
+	<content><![CDATA[
+template<class T>
+struct LazySegmentTree {
+	int n;
+	vector<T> V;
+	vector<T> lazy;
+	LazySegmentTree(int n) : n(n) {
+		V = vector<T>(4*n);
+		lazy = vector<T>(4*n);
+	}
+	void push(int h, int tl, int tr) {
+		/* STUFF */
+		V[h] += lazy[h] * (tr - tl + 1);
+		if(tl < tr) {
+			lazy[h*2] += lazy[h];
+			lazy[h*2+1] += lazy[h];
+		}
+		lazy[h] = 0;
+	}
+	void update(int h, int tl, int tr, int l, int r, T x) {
+		push(h, tl, tr);
+		if(tr < l || tl > r) return;
+		if(l <= tl && tr <= r) {
+			${4:lazy[h] += x; // STUFF}
+			push(h, tl, tr);
+			return;
+		}
+		int mid = (tl + tr) >> 1;
+		update(h*2, tl, mid, l, r, x);
+		update(h*2+1, mid+1, tr, l, r, x);
+		${1:V[h] = V[h*2] + V[h*2+1]; // STUFF}
+	}
+	void update(int l, int r, T x) {
+		update(1, 1, n, l, r, x);
+	}
+	T query(int h, int tl, int tr, int l, int r) {
+		push(h, tl, tr);
+		if(tr < l || tl > r) return ${2:0; // STUFF}
+		if(l <= tl && tr <= r) return V[h];
+		int mid = (tl + tr) >> 1;
+		T ql = query(h*2, tl, mid, l, r);
+		T qr = query(h*2+1, mid+1, tr, l, r);
+		return ${3:ql + qr; // STUFF}
+	}
+	T query(int l, int r) {
+		return query(1, 1, n, l, r);
+	}
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-lazy-segment-tree</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

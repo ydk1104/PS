@@ -1,0 +1,66 @@
+<snippet>
+	<content><![CDATA[
+struct MCMF {
+	using VL = vector<ll>;
+	using VVL = vector<VL>;
+	VVL to, re, co, rev;
+	int n;
+	MCMF(int n) : n(n) {
+		to = VVL(n+1);
+		re = VVL(n+1);
+		co = VVL(n+1);
+		rev = VVL(n+1);
+	}
+	void addEdge(int a, int b, ll r, ll c) {
+		to[a].push_back(b);
+		to[b].push_back(a);
+		re[a].push_back(r);
+		re[b].push_back(0);
+		co[a].push_back(c);
+		co[b].push_back(-c);
+		rev[a].push_back(SZ(to[b])-1);
+		rev[b].push_back(SZ(to[a])-1);
+	}
+	pair<ll,ll> solve(int src, int dst) {
+		ll flow = 0, tot = 0;
+		while(1) {
+			vector<pair<int,int> > par(n+1, {-1,-1});
+			vector<bool> chk(n+1, 0);
+			VL dist(n+1, 1e18);
+			queue<int> q;
+			q.push(src), dist[src] = 0;
+			while(!q.empty()) {
+				int u = q.front(); q.pop();
+				chk[u] = 0;
+				for(int i=0; i<SZ(to[u]); i++) {
+					int v = to[u][i];
+					if(re[u][i] > 0 && dist[u] + co[u][i] < dist[v]) {
+						dist[v] = dist[u] + co[u][i];
+						par[v] = {u, i};
+						if(!chk[v]) {
+							chk[v] = 1;
+							q.push(v);
+						}
+					}
+				}
+			}
+			if(par[dst].first == -1) break;
+			ll mn = 1e18;
+			for(int u=dst; u!=src; u=par[u].first)
+				mn = min(mn, re[par[u].first][par[u].second]);
+			for(int u=dst; u!=src; u=par[u].first) {
+				re[par[u].first][par[u].second] -= mn;
+				re[u][rev[par[u].first][par[u].second]] += mn;
+				tot += co[par[u].first][par[u].second] * mn;
+			}
+			flow += mn;
+		}
+		return {flow, tot};
+	}
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-mcmf</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,27 @@
+<snippet>
+	<content><![CDATA[
+vector<int> adj[${1:200010}];
+int curr, sccNum, scc[$1], dfn[$1];
+stack<int> st;
+int tarjan(int u) {
+	int ret = dfn[u] = ++curr;
+	st.push(u);
+	for(int v : adj[u])
+		if(!dfn[v]) ret = min(ret, tarjan(v));
+		else if(!scc[v]) ret = min(ret, dfn[v]);
+	if(ret == dfn[u]) {
+		sccNum++;
+		while(!st.empty()) {
+			int t = st.top(); st.pop();
+			scc[t] = sccNum;
+			if(t == u) break;
+		}
+	}
+	return ret;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-tarjan</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

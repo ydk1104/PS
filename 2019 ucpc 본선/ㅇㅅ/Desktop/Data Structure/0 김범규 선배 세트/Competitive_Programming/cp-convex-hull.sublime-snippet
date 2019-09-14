@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+vector<point> convex_hull(vector<point>& p) {
+	sort(p.begin(), p.end(), [&](const point& a, const point& b) {
+		return a.x == b.x ? a.y < b.y : a.x < b.x;
+	});
+	vector<point> lo, hi, ret;
+	for(int i=0; i<SZ(p); i++) {
+		while(SZ(lo) >= 2 && ccw(lo[SZ(lo)-2], lo.back(), p[i]) <= 0)
+			lo.pop_back();
+		while(SZ(hi) >= 2 && ccw(hi[SZ(hi)-2], hi.back(), p[i]) >= 0)
+			hi.pop_back();
+		lo.push_back(p[i]);
+		hi.push_back(p[i]);
+	}
+	for(int i=0; i<SZ(lo); i++) ret.push_back(lo[i]);
+	for(int i=SZ(hi)-2; i>0; i--) ret.push_back(hi[i]);
+	return ret;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-convex-hull</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

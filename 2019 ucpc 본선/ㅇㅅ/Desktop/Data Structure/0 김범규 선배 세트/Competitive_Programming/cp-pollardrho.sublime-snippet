@@ -1,0 +1,47 @@
+<snippet>
+	<content><![CDATA[
+/* srand() first!! */
+ll PollardRho(ll n) {
+	/* no prime divisor for 1 */
+	if (n==1) return n;
+
+	/* even number means one of the divisors is 2 */
+	if (n % 2 == 0) return 2;
+
+	/* we will pick from the range [2, N) */
+	ll x = (rand()%(n-2))+2;
+	ll y = x;
+
+	/* the constant in f(x).
+     * Algorithm can be re-run with a different c
+     * if it throws failure for a composite. */
+	ll c = (rand()%(n-1))+1;
+
+	/* Initialize candidate divisor (or result) */
+	ll d = 1;  
+
+	/* until the prime factor isn't obtained.
+       If n is prime, return n */
+	while (d==1) {
+		/* Tortoise Move: x(i+1) = f(x(i)) */
+		x = (modpow(x, 2, n) + c + n)%n;
+
+		/* Hare Move: y(i+1) = f(f(y(i))) */
+		y = (modpow(y, 2, n) + c + n)%n;
+		y = (modpow(y, 2, n) + c + n)%n;
+
+		/* check gcd of |x-y| and n */
+		d = __gcd(abs(x-y), n);
+
+		/* retry if the algorithm fails to find prime factor
+         * with chosen x and c */
+		if (d==n) return PollardRho(n);
+	}
+	return d;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-pollardrho</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

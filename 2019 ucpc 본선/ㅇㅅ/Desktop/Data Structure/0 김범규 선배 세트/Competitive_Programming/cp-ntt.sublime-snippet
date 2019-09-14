@@ -1,0 +1,57 @@
+<snippet>
+	<content><![CDATA[
+namespace NTT {
+	// P = 469762049
+	const int A = 7, B = 26, P = A << B | 1, R = 3;
+	int Log(int n) {
+		int r = 0;
+		while(n > 1) n >>= 1, r++;
+		return r;
+	}
+	int Pow(int a, int n) {
+		int r = 1, b = a;
+		while(n > 0) {
+			if(n & 1) r = 1ll * r * b % P;
+			b = 1ll * b * b % P;
+			n >>= 1;
+		}
+		return r;
+	}
+	int Rev(int n, int lg) {
+		int r = 0;
+		for(int i=0; i<lg; i++, n>>=1)
+			r = (r << 1) + (n & 1);
+		return r;
+	}
+	void doNTT(vector<int>& a, bool f) {
+		int n = SZ(a), lg = Log(n);
+		for(int i=0; i<n; i++) {
+			int j = Rev(i, lg);
+			if(i < j) swap(a[i], a[j]);
+		}
+		for(int i=1; i<n; i<<=1) {
+			int x = Pow(f ? Pow(R, P - 2) : R, P / i >> 1);
+			for(int j=0; j<n; j+=i<<1) {
+				int y = 1;
+				for(int k=0; k<i; k++) {
+					int u = a[j+k];
+					int v = 1ll * a[i+j+k] * y % P;
+					a[j+k] = (u + v) % P;
+					a[i+j+k] = (u - v + P) % P;
+					y = 1ll * y * x % P;
+				}
+			}
+		}
+		if(f) {
+			int inv = Pow(n, P - 2);
+			for(int i=0; i<n; i++) a[i] = 1ll * a[i] * inv % P;
+		}
+	}
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-ntt</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

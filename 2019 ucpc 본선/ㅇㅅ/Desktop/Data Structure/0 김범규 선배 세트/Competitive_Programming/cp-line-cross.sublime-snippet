@@ -1,0 +1,66 @@
+<snippet>
+	<content><![CDATA[
+struct P {
+	int x;
+	int y;
+
+	P operator -(const P& other) {
+		return P({x-other.x, y-other.y});
+	}
+
+    bool operator ==(const P& other) {
+        return x==other.x && y == other.y;
+    }
+
+    bool operator <(const P& other) {
+        if (x != other.x) return x < other.x;
+        return y < other.y;
+    }
+};
+
+int cross(P a, P b) {
+	return a.x*b.y - b.x*a.y;
+}
+
+int ccw(P a, P b, P c) {
+	int r = cross(b-a, c-a);
+	if (r > 0) return 1;
+	if (r < 0) return -1;
+	return 0;
+}
+
+int dot_inner(P a, P b) {
+    return a.x*b.x + a.y*b.y;
+}
+
+int dot(P a, P b, P c) {
+    return dot_inner(c-a, c-b);
+}
+
+#define INF -1E6
+int intersect(P a, P b, P c, P d) {
+    int c1 = ccw(a, b, c);
+    int c2 = ccw(a, b, d);
+    int c3 = ccw(c, d, a);
+    int c4 = ccw(c, d, b);
+
+    if (!c1 && !c2) {
+        if (b < a) swap(a, b);
+        if (d < c) swap(c, d);
+        if (!c3 && !c4) {
+            if (b < c || d < a) return 0;
+            if (b == c || d == a) return 1;
+            return INF;
+        }
+        return 1;
+    }
+
+    if(c1 == c2 || c3 == c4) return 0;
+    return 1;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-line-cross</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

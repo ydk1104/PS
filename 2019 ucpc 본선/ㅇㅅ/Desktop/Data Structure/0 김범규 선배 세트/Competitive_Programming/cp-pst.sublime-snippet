@@ -1,0 +1,35 @@
+<snippet>
+	<content><![CDATA[
+struct PSTFunc {
+	int L[T_MAX], R[T_MAX], V[T_MAX];
+	int sz = 0;
+	int build(int tl, int tr) {
+		int nn = ++sz;
+		V[nn] = L[nn] = R[nn] = 0;
+		if(tl == tr) return nn;
+		L[nn] = build(tl, (tl + tr) / 2);
+		R[nn] = build((tl + tr) / 2 + 1, tr);
+		return nn;
+	}
+	int update(int n, int tl, int tr, int p, int x) {
+		if(p < tl || tr < p) return n;
+		int nn = ++sz;
+		L[nn] = L[n], R[nn] = R[n], V[nn] = V[n] + x;
+		if(tl == tr) return nn;
+		if(p <= (tl + tr) / 2) L[nn] = update(L[n], tl, (tl + tr) / 2, p, x);
+		else R[nn] = update(R[n], (tl + tr) / 2 + 1, tr, p, x);
+		return nn;
+	}
+	int query(int n, int tl, int tr, int l, int r) {
+		if(tr < l || r < tl) return 0;
+		if(l <= tl && tr <= r) return V[n];
+		return query(L[n], tl, (tl + tr) / 2, l, r)
+			+ query(R[n], (tl + tr) / 2 + 1, tr, l, r);
+	}
+} pst;
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-pst</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

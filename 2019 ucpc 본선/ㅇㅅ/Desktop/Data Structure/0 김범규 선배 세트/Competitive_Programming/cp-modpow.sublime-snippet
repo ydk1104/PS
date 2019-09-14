@@ -1,0 +1,17 @@
+<snippet>
+	<content><![CDATA[
+int modpow(int a, long long n, int mod = ${1:DEFAULT}) {
+	int r = 1, b = a;
+	while(n > 0) {
+		if(n & 1) r = 1ll * r * b % mod;
+		b = 1ll * b * b % mod;
+		n >>= 1;
+	}
+	return r;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-modpow</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

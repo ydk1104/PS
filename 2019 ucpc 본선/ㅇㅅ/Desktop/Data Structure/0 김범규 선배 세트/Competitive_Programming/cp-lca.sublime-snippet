@@ -1,0 +1,19 @@
+<snippet>
+	<content><![CDATA[
+int lca(int a, int b) {
+	if(dep[a] < dep[b]) swap(a, b);
+	int k = dep[a] - dep[b];
+	for(int i=0; k; i++, k>>=1)
+		if(k & 1) a = T[a][i];
+	if(a == b) return a;
+	for(int i=${1:UPPER}; i>=0; i--)
+		if(T[a][i+1] == T[b][i+1] && T[a][i] != T[b][i])
+			a = T[a][i], b = T[b][i];
+	return T[a][0];
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-lca</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

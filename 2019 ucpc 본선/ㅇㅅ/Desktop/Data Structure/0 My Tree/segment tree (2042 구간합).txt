@@ -1,0 +1,27 @@
+struct segtree{
+    vector<ll> A, tree;
+    ll init_size(int n){ /// this is 0 - based
+        A.resize(n);
+        int h = (int)ceil(log2(n));
+        int tree_size = (1<<(h+1));
+        tree.resize(tree_size);
+    }
+    ll init(int node,int start,int finish){
+        if(start==finish) return tree[node] = A[start];
+        else return tree[node] = init(node*2,start,(start+finish)/2)+init(node*2+1,(start+finish)/2+1,finish);
+    }
+    void update(int node,int start,int finish,int index,ll diff){
+        if(index<start||index>finish) return;
+        tree[node] = tree[node] + diff;
+        if(start!=finish){
+            update(node*2,start,(start+finish)/2,index,diff);
+            update(node*2+1,(start+finish)/2+1,finish,index,diff);
+        }
+    }
+    ll sum(int node,int start,int finish,int left,int right){
+        if(left>finish||right<start) return 0;
+        if(left<=start&&finish<=right) return tree[node];
+        return sum(node*2,start,(start+finish)/2,left,right)+sum(node*2+1,(start+finish)/2+1,finish,left,right);
+    }
+};
+

@@ -1,0 +1,18 @@
+<snippet>
+	<content><![CDATA[
+namespace Mobius {
+	int mu[${1:100010}];
+	void proc() {
+		memset(mu, -1, sizeof(mu));
+		mu[0] = 0, mu[1] = 1;
+		for(int i=2; i<=$1; i++)
+			if(mu[i]) for(int j=i+i; j<=$1; j+=i)
+				mu[j] -= mu[i];
+	}
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-mobius-func</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

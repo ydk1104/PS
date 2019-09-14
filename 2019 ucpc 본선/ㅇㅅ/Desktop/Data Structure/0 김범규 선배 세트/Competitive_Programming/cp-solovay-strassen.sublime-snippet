@@ -1,0 +1,54 @@
+<snippet>
+	<content><![CDATA[
+/* srand() first!! */
+ll calculateJacobian(ll a, ll n) {
+	if(!a) return 0;// (0/n) = 0
+	ll ans = 1;
+	if(a < 0) {
+		a = -a; // (a/n) = (-a/n)*(-1/n)
+		if (n % 4 == 3)
+			ans = -ans; // (-1/n) = -1 if n = 3 (mod 4)
+	}
+	if(a == 1)
+		return ans;// (1/n) = 1
+	while(a) {
+		if (a < 0) {
+			a = -a;// (a/n) = (-a/n)*(-1/n)
+			if (n % 4 == 3)
+				ans = -ans;// (-1/n) = -1 if n = 3 (mod 4)
+		}
+		while (a % 2 == 0) {
+			a = a / 2;
+			if (n % 8 == 3 || n % 8 == 5)
+				ans = -ans;
+		}
+		swap(a, n);
+		if (a % 4 == 3 && n % 4 == 3)
+			ans = -ans;
+		a = a % n;
+		if (a > n / 2)
+			a = a - n;
+	}
+	if (n == 1)
+		return ans;
+	return 0;
+}
+bool isPrime(ll p, int iterations) {
+	if(p < 2) return 0;
+	if(p != 2 && p % 2 == 0) return 0;
+	for(int i = 0; i < iterations; i++) {
+		// Generate a random number a
+		ll a = rand() % (p - 1) + 1;
+		ll jacobian = (p + calculateJacobian(a, p)) % p;
+		ll mod = modpow(a, (p - 1) / 2, p);
+		if (!jacobian || mod != jacobian)
+			return 0;
+	}
+	return 1;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cp-solovay-strassen</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
