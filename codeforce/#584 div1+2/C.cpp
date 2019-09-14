@@ -1,42 +1,46 @@
 #include<stdio.h>
-#include<stack>
 
-char s[200011];
+char s[200001];
+char ans[200001];
 
 int main(void){
 	int T;
 	for(scanf("%d", &T); T--;){
-		std::stack<int> stk[2];
 		int N;
-		scanf("%d",&N);
-		scanf("%s", s+1);
-		stk[0].push(0);
-		for(int i=1; s[i]; i++){
-			while(!stk[0].empty() && s[stk[0].top()] > s[i]){
-//				printf("%d\n", stk[0].top());
-				stk[1].push(stk[0].top());
-				stk[0].pop();
+		scanf("%d", &N);
+		scanf("%s", s);
+		for(int p=0; p<10; p++){
+			for(int i=0; s[i]; i++){
+				if(s[i]-'0' < p){
+					ans[i] = '1';
+				}
+				else if(s[i]-'0' > p){
+					ans[i] = '2';
+				}
+				else{
+					ans[i] = '3';
+				}
 			}
-			stk[0].push(i);
-		}
-		while(!stk[0].empty()){
-			s[stk[0].top()] = '1'; stk[0].pop();
-		}
-		int prev = '9';
-		while(!stk[1].empty()){
-//			printf("%d\n", stk[1].top());
-			int now = stk[1].top();
-			if(prev < s[now]){
-				printf("-");
-				goto v;
+			int check=0;
+			for(int i=N-1; i>=0; i--){
+				if(ans[i]=='1') check=1;
+				if(ans[i]=='3'){
+					ans[i] = '1' + check;
+				}
 			}
-			prev = s[now];
-			s[now] = '2';
-			stk[1].pop();
+			int prev[2] = {0, };
+			for(int i=0; s[i]; i++){
+				if(prev[ans[i]-'1'] > s[i]){
+					goto v;
+				}
+				prev[ans[i]-'1'] = s[i];
+			}
+			ans[N] = 0;
+			printf("%s\n", ans);
+			goto w;
+			v:;
 		}
-		printf("%s",s+1);
-		v:
-		printf("\n");
-		s[0] = 0;
+		printf("-\n");
+		w:;
 	}
 }
