@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<algorithm>
+#include<vector>
 #include<tuple>
 
 std::vector<std::pair<int,int> > v;
