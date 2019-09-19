@@ -2,6 +2,7 @@
 // include iostream, string, queue
 // check (q1, q2, ...) in s
 // O(q1 + q2 + ... + s)
+// Reference : http://blog.naver.com/kks227/220992598966
 
 struct trie{
 	trie *next[26] = {0, };
