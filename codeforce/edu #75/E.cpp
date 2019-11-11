@@ -41,11 +41,10 @@ int main(void){
 			}
 		}
 		int sz = ans.size();
-		std::sort(ans.begin(), ans.end(), [](const std::pair<int, int>& x, const std::pair<int, int>& y){
-			return x.first > y.first;
-		});
+//		std::sort(ans.begin(), ans.end(), [](const std::pair<int, int>& x, const std::pair<int, int>& y){
+//			return x.first > y.first;
+//		});
 		for(auto i:ans){
-			printf("test : %d %d\n", i.first, i.second);
 			temp[i.second]--;
 			sz--;
 			int left = 0, right = num[0] + sz;
