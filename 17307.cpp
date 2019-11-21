@@ -5,6 +5,7 @@ long long c[250010];
 long long l[250010], r[250010];
 
 int main(void){
+	printf("%d\n", int('a'));
 	long long N, M;
 	scanf("%lld %lld", &N, &M);
 	for(int i=0; i<N; i++){
@@ -20,5 +21,5 @@ int main(void){
 	for(int i=0; i<N; i++){
 		if(max > std::max(l[i], r[i])) max = std::max(l[i], r[i]), ans=i;
 	}
-	printf("%d\n%d", ans, max);
+	printf("%d\n%d", ans+1, max);
 }
