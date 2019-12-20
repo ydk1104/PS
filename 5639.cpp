@@ -1,14 +1,28 @@
 #include<stdio.h>
-#include<vector>
+#include<stack>
 
-std::vector<int> v;
+std::stack<int> s;
 
 int main(void){
 	int x;
+	scanf("%d", &x);
+	s.push(x);
+	int max = 100000;
 	while(~scanf("%d", &x)){
-		v.push_back(x);
+		if(s.top() > x){
+			s.push(x);
+			max = x;
+		}
+		if(x < max){
+			printf("%d\n", s.top()); s.pop();
+		}
+		else if(s.top() < x){
+			s.push(x);
+		}
+		printf("%d")
 	}
-	for(int i=0; i<v.size()-1; i++){
-		if(v[i] < v[i+1]) printf
+	while(!s.empty()){
+		printf("out : ");
+		printf("%d\n", s.top()); s.pop();
 	}
 }
